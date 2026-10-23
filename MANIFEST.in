@@ -1,0 +1,9 @@
+include CONTRIBUTING.md
+include requirements.txt
+include run.sh
+include run.bat
+recursive-include docs *.png
+recursive-include native *.c *.sh *.ps1
+recursive-include packaging *.py *.spec
+recursive-include scripts *.sh
+recursive-include tests *.py

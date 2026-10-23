@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "twrpscrcpy"
+version = "1.0.0"
+description = "scrcpy-like screen mirroring and control for TWRP recovery"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Malek Haroun" }]
+keywords = ["scrcpy", "twrp", "recovery", "android", "adb", "screen-mirroring"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: X11 Applications :: Qt",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "PySide6>=6.5",
+    "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "build>=1.0",
+    "pyinstaller>=6.0,<7",
+]
+
+[project.scripts]
+twrpscrcpy = "twrpscrcpy.__main__:main"
+
+[tool.setuptools]
+packages = ["twrpscrcpy"]
+
+[tool.setuptools.package-data]
+twrpscrcpy = ["bin/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

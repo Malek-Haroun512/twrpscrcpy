@@ -1,0 +1,9 @@
+* text=auto
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.sh text eol=lf
+twrpscrcpy/bin/* binary
+*.png binary
+*.whl binary
+*.gz binary
+*.zip binary

@@ -1,0 +1,61 @@
+name: Bug report
+description: Something is not working on your phone or computer
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please remove serial numbers or other personal
+        data before pasting logs.
+
+  - type: input
+    id: os
+    attributes:
+      label: Host operating system
+      placeholder: "Windows 11, macOS 14, Ubuntu 24.04, ..."
+    validations:
+      required: true
+
+  - type: input
+    id: python
+    attributes:
+      label: Python and twrpscrcpy versions
+      placeholder: "Python 3.12.4, twrpscrcpy 1.0.0 (release zip or run.sh)"
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Phone model and TWRP version
+      placeholder: "Samsung SM-G965N, TWRP 3.6.2_9-0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Boot into TWRP
+        2. Start twrpscrcpy
+        3. Click ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect, and what happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Output of `adb devices -l`, the app console, and any traceback.
+      render: shell
+    validations:
+      required: false

@@ -1,0 +1,104 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Python package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip build
+          python -m build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python-dist
+          path: dist/*
+
+  binaries:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux x86_64
+            os: ubuntu-latest
+            asset: twrpscrcpy-linux-x86_64.zip
+          - name: Windows x86_64
+            os: windows-latest
+            asset: twrpscrcpy-windows-x86_64.zip
+          - name: macOS
+            os: macos-latest
+            asset: twrpscrcpy-macos.zip
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install . "pyinstaller>=6.0,<7"
+
+      - name: Build executable
+        run: pyinstaller packaging/twrpscrcpy.spec --noconfirm
+
+      - name: Package (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          cd dist
+          zip -r "../${{ matrix.asset }}" twrpscrcpy
+          cd ..
+          ls -lh "${{ matrix.asset }}"
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Compress-Archive -Path dist\twrpscrcpy.exe -DestinationPath "${{ matrix.asset }}"
+          Get-Item "${{ matrix.asset }}" | Format-List Name, Length
+
+      - name: Package (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent dist/twrpscrcpy.app "${{ matrix.asset }}"
+          ls -lh "${{ matrix.asset }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: ${{ matrix.asset }}
+
+  publish:
+    name: Publish release
+    needs: [package, binaries]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/*.whl
+            artifacts/*.tar.gz
+            artifacts/*.zip
+          generate_release_notes: true
+          draft: false
