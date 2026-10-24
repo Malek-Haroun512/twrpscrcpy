@@ -19,7 +19,8 @@ that expose a readable framebuffer and writable evdev input devices.
 ## Requirements
 - **Windows 10/11, Linux, or macOS** (Intel or Apple Silicon). The phone helper is an ARM Linux binary, so the host OS only needs Python and adb.
 - Python 3.10+ when running from source, or use a prebuilt executable from the **Releases** page (no Python needed).
-- `PySide6` and `numpy`; `pip install .` installs them automatically.
+- `PySide6` and `numpy`. The prebuilt executables bundle them; from source, `pip install .` installs
+  them automatically. On Arch you can also use `sudo pacman -S pyside6 python-numpy`.
 - `adb` on `PATH`:
   - Linux: your package manager (`sudo apt install adb`, `sudo pacman -S android-tools`).
   - macOS: `brew install android-platform-tools`.
@@ -32,10 +33,26 @@ that expose a readable framebuffer and writable evdev input devices.
 
 **From source:**
 ```bash
-python3 -m pip install .
+git clone https://github.com/Malek-Haroun512/twrpscrcpy.git
+cd twrpscrcpy
+python3 -m venv .venv
+source .venv/bin/activate        # fish: source .venv/bin/activate.fish
+python -m pip install .
 twrpscrcpy
 ```
-On Windows use `py -3 -m pip install .` instead of `python3`. Or without installing:
+On Windows:
+```bat
+py -3 -m venv .venv
+.venv\Scripts\activate
+py -3 -m pip install .
+twrpscrcpy
+```
+Most Linux distributions mark the system Python as externally managed (PEP 668), so installing into
+a virtual environment as above is the reliable option. If `python3 -m pip` is missing, the virtual
+environment still bootstraps its own pip.
+
+If you already have `PySide6` and `numpy` (for example from
+`sudo pacman -S pyside6 python-numpy` on Arch), you can run without installing anything:
 ```bash
 ./run.sh            # Linux / macOS
 run.bat             # Windows
